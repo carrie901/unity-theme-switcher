@@ -1,7 +1,6 @@
 ﻿using Microsoft.WindowsAPICodePack.Dialogs;
 using System.Diagnostics;
 using System.IO;
-using System.Reflection;
 using System.Windows;
 
 namespace unity_theme_switcher
@@ -76,6 +75,14 @@ namespace unity_theme_switcher
 
         private void Switch_Theme(object sender, RoutedEventArgs e)
         {
+            if (unityVersion.StartsWith("2019"))
+                Switch_Theme_Internal("16519510", "t", "u");
+            else if (unityVersion.StartsWith("2018"))
+                Switch_Theme_Internal("19340416", "u", "t");
+        }
+
+        private void Switch_Theme_Internal(string offset, string lightVal, string darkVal)
+        {
             if (IsUnityRunning())
             {
                 MessageBox.Show("Please shutdown your Unity Editor before proceeding.", "Unity Theme Switcher", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -84,16 +91,13 @@ namespace unity_theme_switcher
 
             BackupExecutable();
 
-            if (unityVersion.StartsWith("2019"))
-            {
-                string newByte = currentTheme == Theme.Dark ? "t" : "u";
-                string cmd = App.Current.Properties["PrintfPath"] + " " + newByte + " | " + App.Current.Properties["DDPath"] + " of=\"" + exePath + "\" bs=1 seek=16519510 count=1 conv=notrunc";
-                Process p = CreateConsoleProcess(cmd);
-                p.Start();
-                p.WaitForExit();
-            }
+            string newByte = currentTheme == Theme.Dark ? lightVal : darkVal;
+            string cmd = App.Current.Properties["PrintfPath"] + " " + newByte + " | " + App.Current.Properties["DDPath"] + " of=\"" + exePath + "\" bs=1 seek=" + offset + " count=1 conv=notrunc";
+            Process p = CreateConsoleProcess(cmd);
+            p.Start();
+            p.WaitForExit();
 
-            currentTheme = (Theme)InverseThemeBit;
+            currentTheme = (Theme)InverseTheme;
 
             RefreshThemeUI();
             MessageBox.Show("Theme switched!\nA backup Unity.exe.bak file was created in the same directory.\nYou can restore your editor by renaming the backup to Unity.exe if needed.", "Unity Theme Switcher", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -119,37 +123,42 @@ namespace unity_theme_switcher
         private Theme GetCurrentTheme()
         {
             if (unityVersion.StartsWith("2019"))
-            {
-                string fileName = GenerateUniqueLocalFilename();
-
-                string cmd = App.Current.Properties["DDPath"] + " skip=16519510 count=1 if=\"" + exePath + "\" of=\"" + fileName + "\" bs=1";
-                Process p = CreateConsoleProcess(cmd);
-                p.Start();
-                p.WaitForExit();
-
-                cmd = App.Current.Properties["CatPath"] + " \"" + fileName + "\"";
-                p = CreateConsoleProcess(cmd, true);
-                p.Start();
-                p.WaitForExit();
-
-                File.Delete(fileName);
-
-                string stringVal = string.Empty;
-
-                // There will only be one line with one character
-                // 1 byte contains 1 character
-                while (!p.StandardOutput.EndOfStream)
-                {
-                    stringVal = p.StandardOutput.ReadLine();
-                }
-
-                if (stringVal == "u")
-                    return Theme.Dark;
-                else
-                    return Theme.Light;
-            }
+                return GetCurrentTheme_Internal("16519510", "u");
+            else if (unityVersion.StartsWith("2018"))
+                return GetCurrentTheme_Internal("19340416", "t");
             else
                 return Theme.NotSupported;
+        }
+
+        private Theme GetCurrentTheme_Internal(string offset, string darkVal)
+        {
+            string fileName = GenerateUniqueLocalFilename();
+
+            string cmd = App.Current.Properties["DDPath"] + " skip=" + offset + " count=1 if=\"" + exePath + "\" of=\"" + fileName + "\" bs=1";
+            Process p = CreateConsoleProcess(cmd);
+            p.Start();
+            p.WaitForExit();
+
+            cmd = App.Current.Properties["CatPath"] + " \"" + fileName + "\"";
+            p = CreateConsoleProcess(cmd, true);
+            p.Start();
+            p.WaitForExit();
+
+            File.Delete(fileName);
+
+            string stringVal = string.Empty;
+
+            // There will only be one line with one character
+            // 1 byte contains 1 character
+            while (!p.StandardOutput.EndOfStream)
+            {
+                stringVal = p.StandardOutput.ReadLine();
+            }
+
+            if (stringVal == darkVal)
+                return Theme.Dark;
+            else
+                return Theme.Light;
         }
 
         private void RefreshThemeUI()
@@ -169,10 +178,10 @@ namespace unity_theme_switcher
                     break;
             }
 
-            Toggle.Content = string.Concat("Switch to ", System.Enum.GetName(typeof(Theme), InverseThemeBit));
+            Toggle.Content = string.Concat("Switch to ", System.Enum.GetName(typeof(Theme), InverseTheme));
         }
 
-        private Theme InverseThemeBit
+        private Theme InverseTheme
         {
             get
             {

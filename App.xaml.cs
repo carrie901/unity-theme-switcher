@@ -4,6 +4,7 @@ using System.Security.Principal;
 using System.Diagnostics;
 using System.Reflection;
 using System.IO;
+using System.Linq;
 
 namespace unity_theme_switcher
 {
@@ -14,7 +15,7 @@ namespace unity_theme_switcher
     {
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            AdminRelauncher();
+            AdminRelauncher();  
             ExtractAllResources();
 
             Properties.Add("CatPath", string.Concat(Path.GetTempPath(), "cat.exe"));
@@ -58,31 +59,27 @@ namespace unity_theme_switcher
             return principal.IsInRole(WindowsBuiltInRole.Administrator);
         }
 
-        private void ExtractResource(string embeddedFileName, string destinationPath)
+        private void ExtractResources(string destinationPath, params string[] embeddedFileNames)
         {
             Assembly currentAssembly = Assembly.GetExecutingAssembly();
             string[] arrResources = currentAssembly.GetManifestResourceNames();
-            foreach (string resourceName in arrResources)
+
+            var externals = arrResources.Where(r => embeddedFileNames.Any(f => r.ToUpper().EndsWith(f.ToUpper())));
+
+            foreach(string resourceName in externals)
             {
-                if (resourceName.ToUpper().EndsWith(embeddedFileName.ToUpper()))
-                {
-                    Stream resourceToSave = currentAssembly.GetManifestResourceStream(resourceName);
-                    string file = string.Concat(destinationPath, embeddedFileName);
-                    File.Create(string.Concat(destinationPath, embeddedFileName)).Close();
-                    var output = File.OpenWrite(file);
-                    resourceToSave.CopyTo(output);
-                    resourceToSave.Close();
-                }
+                Stream resourceToSave = currentAssembly.GetManifestResourceStream(resourceName);
+                string file = string.Concat(destinationPath, embeddedFileNames.Where(f => resourceName.ToUpper().EndsWith(f.ToUpper())).First());
+                File.Create(file).Close();
+                var output = File.OpenWrite(file);
+                resourceToSave.CopyTo(output);
+                resourceToSave.Close();
             }
         }
 
         private void ExtractAllResources()
         {
-            string path = Path.GetTempPath();
-
-            ExtractResource("cat.exe", path);
-            ExtractResource("dd.exe", path);
-            ExtractResource("printf.exe", path);
+            ExtractResources(Path.GetTempPath(), new []{ "cat.exe", "dd.exe", "printf.exe" });
         }
 
         private void RemoveAllResources()
