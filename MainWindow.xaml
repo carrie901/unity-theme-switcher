@@ -1,0 +1,56 @@
+﻿<Window x:Class="unity_theme_switcher.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:unity_theme_switcher"
+        mc:Ignorable="d"
+        Title="Unity Theme Switcher" Height="449.385" Width="800" ResizeMode="NoResize">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="0*"/>
+        </Grid.ColumnDefinitions>
+        <DockPanel>
+            <StackPanel DockPanel.Dock="Right">
+                <GroupBox Height="168" Width="770">
+                    <GroupBox.Header>
+                        <Span FontSize="16" FontWeight="Bold">
+                            Unity executable
+                        </Span>
+                    </GroupBox.Header>
+                    <Grid>
+                        <StackPanel Margin="10,10">
+                            <TextBlock TextWrapping="Wrap" HorizontalAlignment="Center">Please select your Unity.exe file.</TextBlock>
+                            <Button HorizontalAlignment="Center" Margin="0,20" Click="Select_Executable">
+                                <Label>Select file</Label>
+                            </Button>
+                            <TextBlock Name="SelectedFileText" TextWrapping="Wrap" IsEnabled="False">
+                                <Run FontWeight="Bold">Selected Unity.exe location:</Run>
+                                <Run Name="FolderLabel">None</Run>
+                            </TextBlock>
+                            <TextBlock Name="DetectedVersionText" TextWrapping="Wrap" IsEnabled="False">
+                                <Run FontWeight="Bold">Detected Unity Version:</Run>
+                                <Run Name="UnityVersion">None</Run>
+                            </TextBlock>
+                        </StackPanel>
+                    </Grid>
+                </GroupBox>
+                <GroupBox Name="SwitchBox" Margin="10,10" IsEnabled="False" RenderTransformOrigin="0.501,-0.045" Height="236">
+                    <GroupBox.Header>
+                        <Span FontSize="16" FontWeight="Bold">
+                            Theme
+                        </Span>
+                    </GroupBox.Header>
+                    <Grid Height="185">
+                        <StackPanel Name="ThemeBackground" Margin="10,10" Background="LightGray">
+                            <Button Name="Toggle" BorderThickness="2" BorderBrush="Black" HorizontalAlignment="Center" Margin="245,60,242,60" Padding="10" VerticalAlignment="Center" Click="Switch_Theme" IsEnabled="false" Width="255">
+                                <Label FontSize="16" Name="CurrentTheme" Content="Theme undetermined" HorizontalContentAlignment="Center" Width="230" Height="35"/>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                </GroupBox>
+            </StackPanel>
+        </DockPanel>
+    </Grid>
+</Window>
