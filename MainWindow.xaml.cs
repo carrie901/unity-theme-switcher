@@ -75,7 +75,9 @@ namespace unity_theme_switcher
 
         private void Switch_Theme(object sender, RoutedEventArgs e)
         {
-            if (unityVersion.StartsWith("2019"))
+            if (unityVersion.StartsWith("2019.2") || unityVersion.StartsWith("2019.3") || unityVersion.StartsWith("2020.1"))
+                Switch_Theme_Internal("11366617", "u", "t");
+            if (unityVersion.StartsWith("2019.1"))
                 Switch_Theme_Internal("16519510", "t", "u");
             else if (unityVersion.StartsWith("2018"))
                 Switch_Theme_Internal("19340416", "u", "t");
@@ -122,7 +124,9 @@ namespace unity_theme_switcher
         // 1 light, 0 absence of light
         private Theme GetCurrentTheme()
         {
-            if (unityVersion.StartsWith("2019"))
+            if (unityVersion.StartsWith("2019.2") || unityVersion.StartsWith("2019.3") || unityVersion.StartsWith("2020.1"))
+                return GetCurrentTheme_Internal("11366617", "t");
+            else if (unityVersion.StartsWith("2019.1"))
                 return GetCurrentTheme_Internal("16519510", "u");
             else if (unityVersion.StartsWith("2018"))
                 return GetCurrentTheme_Internal("19340416", "t");

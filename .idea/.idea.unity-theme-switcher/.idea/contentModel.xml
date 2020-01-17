@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ContentModelStore">
+    <e p="C:\Data\Development\Repos\Git\Tools\unity-theme-switcher" t="IncludeRecursive">
+      <e p="App.config" t="Include" />
+      <e p="app.manifest" t="Include" />
+      <e p="App.xaml" t="Include" />
+      <e p="App.xaml.cs" t="Include" />
+      <e p="bin" t="ExcludeRecursive" />
+      <e p="externals" t="Include">
+        <e p="cat.exe" t="Include" />
+        <e p="dd.exe" t="Include" />
+        <e p="printf.exe" t="Include" />
+      </e>
+      <e p="MainWindow.xaml" t="Include" />
+      <e p="MainWindow.xaml.cs" t="Include" />
+      <e p="obj" t="ExcludeRecursive" />
+      <e p="packages" t="ExcludeRecursive" />
+      <e p="packages.config" t="Include" />
+      <e p="Properties" t="Include">
+        <e p="AssemblyInfo.cs" t="Include" />
+        <e p="Resources.Designer.cs" t="Include" />
+        <e p="Resources.resx" t="Include" />
+        <e p="Settings.Designer.cs" t="Include" />
+        <e p="Settings.settings" t="Include" />
+      </e>
+      <e p="unity-theme-switcher.csproj" t="IncludeRecursive" />
+      <e p="unity-theme-switcher.sln" t="IncludeFlat" />
+    </e>
+    <e p="C:\Users\Lekszander\.Rider2019.1\system\extResources" t="IncludeRecursive" />
+    <e p="C:\Users\Lekszander\.Rider2019.1\system\resharper-host\local\Transient\ReSharperHost\v191\SolutionCaches\_unity-theme-switcher.1920397788.00" t="ExcludeRecursive" />
+  </component>
+</project>
